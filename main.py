@@ -13,6 +13,7 @@ from reportlab.lib.units import inch
 from io import BytesIO
 import webbrowser
 from PIL import Image, ImageTk
+from tkinter import colorchooser
 
 # MIT License
 # Copyright (c) 2025 Samuel
@@ -45,10 +46,9 @@ class PGNToPDFConverterApp:
     def __init__(self, root):
         self.root = root
         self.root.title("ChessPdf")
-        
-        # Maximize the window
         self.root.state('zoomed')
-        
+        self.light_square_color = tk.StringVar(value="#F0F1F0")
+        self.dark_square_color = tk.StringVar(value="#C4D8E4")
         self.root.configure(bg='#F0F0F0')
         self.coffee_image = None
         self.button_size = 80
@@ -118,8 +118,31 @@ class PGNToPDFConverterApp:
         config_path = "config.json"
         if os.path.exists(config_path):
             with open(config_path, "r") as file:
-                return json.load(file)
+                config = json.load(file)
+                self.light_square_color.set(config.get("light_square_color", "#F0F1F0"))
+                self.dark_square_color.set(config.get("dark_square_color", "#C4D8E4"))
+                return config
         return {}
+
+    def choose_light_square_color(self):
+        color = colorchooser.askcolor(
+            title="Choose light square color",
+            color=self.light_square_color.get()
+        )
+        if color[1]:  # color[1] contiene el código hexadecimal
+            self.light_square_color.set(color[1])
+            self.light_square_button.configure(bg=color[1])
+            self.save_config()
+
+    def choose_dark_square_color(self):
+        color = colorchooser.askcolor(
+            title="Choose dark square color",
+            color=self.dark_square_color.get()
+        )
+        if color[1]:  # color[1] contiene el código hexadecimal
+            self.dark_square_color.set(color[1])
+            self.dark_square_button.configure(bg=color[1])
+            self.save_config()
 
     def open_coffee_link(self):
         webbrowser.open('https://paypal.me/chesspdf')
@@ -132,6 +155,8 @@ class PGNToPDFConverterApp:
             "board_x": self.board_x.get(),
             "board_y": self.board_y.get(),
             "board_size": self.board_size.get(),
+            "light_square_color": self.light_square_color.get(),
+            "dark_square_color": self.dark_square_color.get(),
             "comment_x": self.comment_x.get(),
             "comment_y": self.comment_y.get(),
             "comment_width": self.comment_width.get(),
@@ -161,11 +186,9 @@ class PGNToPDFConverterApp:
         coffee_container = tk.Frame(main_frame, bg='#F0F0F0')
         coffee_container.pack(fill='x', pady=(20, 30))
 
-        # Create a container for the title and coffee button
         header_container = tk.Frame(coffee_container, bg='#F0F0F0')
         header_container.pack(fill='x')
 
-        # Add title to the left side
         title_label = tk.Label(
             header_container,
             text="ChessPdf",
@@ -314,6 +337,46 @@ class PGNToPDFConverterApp:
     
         board_frame = tk.LabelFrame(options_frame, text="", bg='#F0F0F0', bd=0)
         self.config_frames["Chessboard"] = board_frame
+
+        light_square_frame = tk.Frame(board_frame, bg='#F0F0F0')
+        light_square_frame.pack(fill='x', pady=5, padx=5)
+        tk.Label(
+            light_square_frame,
+            text="Light square:",
+            bg='#F0F0F0'
+        ).pack(side='left')
+        
+        self.light_square_button = tk.Button(
+            light_square_frame,
+            width=8,
+            bg=self.light_square_color.get(),
+            command=self.choose_light_square_color,
+            relief='solid',
+            bd=1,
+            text="Pick color",
+            cursor='hand2'
+        )
+        self.light_square_button.pack(side='left', padx=5)
+
+        dark_square_frame = tk.Frame(board_frame, bg='#F0F0F0')
+        dark_square_frame.pack(fill='x', pady=5, padx=5)
+        tk.Label(
+            dark_square_frame,
+            text="Dark square:",
+            bg='#F0F0F0'
+        ).pack(side='left')
+        
+        self.dark_square_button = tk.Button(
+            dark_square_frame,
+            width=8,
+            bg=self.dark_square_color.get(),
+            command=self.choose_dark_square_color,
+            relief='solid',
+            bd=1,
+            text="Pick color",
+            cursor='hand2'
+        )
+        self.dark_square_button.pack(side='left', padx=5)
     
         x_frame = tk.Frame(board_frame, bg='#F0F0F0')
         x_frame.pack(fill='x', pady=5, padx=5)
@@ -546,15 +609,14 @@ class PGNToPDFConverterApp:
         INFO_SIZE = self.info_font_size.get()
         MOVE_SIZE = self.move_font_size.get()
         COMMENT_SIZE = self.comment_font_size.get()
-        # Use the comment_line_spacing value from the UI
         COMMENT_LINE_HEIGHT = self.comment_line_spacing.get() * inch
         
         svg = chess.svg.board(
             board,
             size=1000,
             colors={
-                "square light": "#F0F1F0",
-                "square dark": "#C4D8E4",
+                "square light": self.light_square_color.get(),
+                "square dark": self.dark_square_color.get(),
             },
             coordinates=False,
             flipped=flipped
