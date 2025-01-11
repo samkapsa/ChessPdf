@@ -2,6 +2,38 @@
 
 **ChessPdf** is a tool to convert chess PGN files into customizable PDF files. It allows you to configure options to generate the PDF according to your preferences.
 
+![image](https://github.com/user-attachments/assets/f3429ea9-8f80-4b18-8bc3-2ee4d22a1880)
+
+
+The generated PDF files look like this (depending on your configuration).
+
+![image](https://github.com/user-attachments/assets/c7963f5e-f913-4bc6-85bb-b915e03ee53d)
+
+# How to download
+
+- If you look to your right (in pc), you will see "Releases."
+- Go to the latest release.
+- Go to "Assets."
+- Choose between the English (en) or Spanish (es) version.
+- Extract the file and double-click on ChessPdf.exe.
+
+## Errors and Fixes
+
+If the program couldn't convert the file, try the following:
+
+Ensure that the PGN files:
+
+- Are in valid format
+- Are not corrupted
+- Can be opened with a text editor
+- Use Latin-1 or UTF-8 encoding
+
+Verify permissions:
+
+- You have write permissions for the destination folder
+- The PGN files are not being used by another program
+- The output PDF is not open in another program
+
 ## License
 
 This software is licensed under the **MIT License**, with the following additional conditions:
