@@ -7,7 +7,7 @@
 
 The generated PDF files look like this (depending on your configuration).
 
-![image](https://github.com/user-attachments/assets/c7963f5e-f913-4bc6-85bb-b915e03ee53d)
+![image](https://github.com/user-attachments/assets/dd3a43c3-03f9-41ed-b195-0406163c41a6)
 
 # How to download
 
